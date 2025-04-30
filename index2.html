@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Futuristic E-Commerce</title>
+  <link rel="stylesheet" href="style.css" />
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <header class="hero">
+    <div class="header-top">
+      <button id="create-account">Create Account</button>
+      <input type="text" id="search-bar" placeholder="Search products...">
+    </div>
+    <div class="parallax-bg"></div>
+    <div class="hero-content">
+      <h1>Galactic Gear Store</h1>
+      <p>Shop the future. Live the fantasy.</p>
+    </div>
+  </header>
+
+  <section class="products" id="products">
+    <!-- Product cards will be injected by JS -->
+  </section>
+
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <span id="close-modal" class="close">&times;</span>
+      <h2 id="modal-title">Product Name</h2>
+      <img id="modal-img" src="" alt="Product Image" style="width:100%; border-radius:10px; margin-bottom:1rem;">
+      <p id="modal-owner">Owner: </p>
+      <p id="modal-price">Price: </p>
+      <p id="modal-desc">This is a detailed description of the product, showcasing futuristic features and benefits that make it one-of-a-kind in the galaxy.</p>
+      <button id="buy-button">Buy Now</button>
+    </div>
+  </div>
+
+  <div id="buy-form-modal" class="modal hidden">
+    <div class="modal-content">
+      <span id="close-form" class="close">&times;</span>
+      <h2>Complete Purchase</h2>
+      <form id="buy-form">
+        <label for="phone">Phone Number:</label><br />
+        <input type="tel" id="phone" name="phone" required><br /><br />
+
+        <label for="payment">Payment Method:</label><br />
+        <select id="payment" name="payment">
+          <option value="card">Credit/Debit Card</option>
+          <option value="upi">UPI</option>
+          <option value="cod">Cash on Delivery</option>
+        </select><br /><br />
+
+        <button type="submit">Confirm Purchase</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
+
+<style>
+    :root {
+  --primary: #0ff;
+  --bg: #0a0a0a;
+  --accent: #fff;
+  --hover: #00f6ff;
+}
+
+body {
+  margin: 0;
+  font-family: 'Orbitron', sans-serif;
+  background: var(--bg);
+  color: var(--accent);
+  overflow-x: hidden;
+}
+
+.hero {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  text-align: center;
+}
+
+.parallax-bg {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80') center/cover no-repeat;
+  transform: translateZ(-1px) scale(1.5);
+  z-index: -1;
+  will-change: transform;
+}
+
+.hero-content {
+  z-index: 1;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  color: var(--primary);
+}
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  padding: 3rem;
+}
+
+.product-card {
+  background: #111;
+  border-radius: 15px;
+  padding: 1rem;
+  box-shadow: 0 0 15px #00f6ff40;
+  transition: 0.3s ease;
+  cursor: pointer;
+}
+
+.product-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px var(--hover);
+}
+
+.product-card img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.cart {
+  position: fixed;
+  right: 0;
+  top: 0;
+  background: #222;
+  padding: 1rem;
+  max-width: 300px;
+  height: 100vh;
+  overflow-y: auto;
+  box-shadow: -5px 0 10px #0ff2;
+}
+
+.cart h2 {
+  color: var(--primary);
+}
+
+#cart-items li {
+  margin: 0.5rem 0;
+}
+
+button {
+  background: var(--primary);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  color: #000;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: var(--hover);
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0d0d0d;
+  color: white;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: #111;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+#search-bar {
+  width: 50%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: none;
+}
+
+#create-account {
+  background: #222;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-content {
+  background: #111;
+  padding: 2rem;
+  border-radius: 10px;
+  max-width: 500px;
+  text-align: left;
+  box-shadow: 0 0 15px var(--hover);
+  color: var(--accent);
+  position: relative;
+}
+
+.close {
+  position: absolute;
+  top: 1rem;
+  right: 2rem;
+  font-size: 2rem;
+  cursor: pointer;
+  color: var(--primary);
+}
+
+.product-card {
+  background: #1a1a1a;
+  padding: 1rem;
+  border-radius: 10px;
+  text-align: center;
+  transition: transform 0.2s;
+  cursor: pointer;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+}
+
+.product-card img {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  padding: 2rem;
+}
+.hero {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  background: linear-gradient(to right, #090979, #00d4ff);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: white;
+}
+
+.parallax-bg {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: url('https://www.transparenttextures.com/patterns/stardust.png');
+  background-size: cover;
+  z-index: -2;
+  opacity: 0.3;
+  animation: floatStars 50s linear infinite;
+}
+
+@keyframes floatStars {
+  from { transform: translateY(0); }
+  to { transform: translateY(-100px); }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  animation: fadeIn 3s ease-out;
+}
+
+.hero-content h1 {
+  font-size: 4rem;
+  text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+  animation: glowText 2s ease-in-out infinite alternate;
+}
+
+.hero-content p {
+  font-size: 1.5rem;
+  text-shadow: 0 0 5px #fff;
+  margin-top: 1rem;
+  color: #ccc;
+}
+
+@keyframes glowText {
+  from {
+    text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+  }
+  to {
+    text-shadow: 0 0 20px #0ff, 0 0 30px #0ff;
+  }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(-20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+
+
+</style>
+
+<script>
+// const products = Array.from({ length: 20 }, (_, i) => ({
+//   id: i + 1,
+//   name: `Item ${i + 1}`,
+//   price: Math.floor(Math.random() * 200) + 50,
+//   img: `https://source.unsplash.com/400x400/?product,${i}`,
+//   owner: `Seller ${i + 1}`,
+//   description: `Item ${i + 1} is a top-tier product from the future, optimized for maximum performance and style.`
+// }));
+const products = [
+  {
+    id: 1,
+    name: "Cosmic Hoodie",
+    price: 120,
+    img: "images/img1.jpg",
+    description: "A warm, comfy hoodie straight from the stars.",
+    owner: "Galactic Threads"
+  },
+  {
+    id: 2,
+    name: "Nebula Sneakers",
+    price: 150,
+    img: "images/img2.jpg",
+    description: "Run through galaxies in these comfy space kicks.",
+    owner: "Stellar Shoes"
+  },
+  // Add 18 more like this...
+  {
+    id: 3,
+    name: "Nebula Sneakers",
+    price: 150,
+    img: "images/img3.jpg",
+    description: "Run through galaxies in these comfy space kicks.",
+    owner: "Stellar Shoes"
+  },
+  {
+    id: 4,
+    name: "Nebula Sneakers",
+    price: 150,
+    img: "images/img4.jpg",
+    description: "Run through galaxies in these comfy space kicks.",
+    owner: "Stellar Shoes"
+  },
+  {
+    id: 5,
+    name: "Nebula Sneakers",
+    price: 150,
+    img: "images/img5.jpg",
+    description: "Run through galaxies in these comfy space kicks.",
+    owner: "Stellar Shoes"
+  },
+  {
+    id: 6,
+    name: "Nebula Sneakers",
+    price: 150,
+    img: "images/img6.jpg",
+    description: "Run through galaxies in these comfy space kicks.",
+    owner: "Stellar Shoes"
+  },
+  {
+    id: 7,
+    name: "Nebula Sneakers",
+    price: 150,
+    img: "images/img7.jpg",
+    description: "Run through galaxies in these comfy space kicks.",
+    owner: "Stellar Shoes"
+  },
+  {
+    id: 8,
+    name: "Nebula Sneakers",
+    price: 150,
+    img: "images/img8.jpg",
+    description: "Run through galaxies in these comfy space kicks.",
+    owner: "Stellar Shoes"
+  },
+  {
+    id: 9,
+    name: "Nebula Sneakers",
+    price: 150,
+    img: "images/img9.jpg",
+    description: "Run through galaxies in these comfy space kicks.",
+    owner: "Stellar Shoes"
+  },
+  {
+    id: 10,
+    name: "Nebula Sneakers",
+    price: 150,
+    img: "images/img10.jpg",
+    description: "Run through galaxies in these comfy space kicks.",
+    owner: "Stellar Shoes"
+  },
+  {
+    id: 11,
+    name: "Nebula Sneakers",
+    price: 150,
+    img: "images/img11.jpg",
+    description: "Run through galaxies in these comfy space kicks.",
+    owner: "Stellar Shoes"
+  },
+  {
+    id: 12,
+    name: "Nebula Sneakers",
+    price: 150,
+    img: "images/img12.jpg",
+    description: "Run through galaxies in these comfy space kicks.",
+    owner: "Stellar Shoes"
+  },
+  {
+    id: 13,
+    name: "Nebula Sneakers",
+    price: 150,
+    img: "images/img13.jpg",
+    description: "Run through galaxies in these comfy space kicks.",
+    owner: "Stellar Shoes"
+  },
+  {
+    id: 14,
+    name: "Nebula Sneakers",
+    price: 150,
+    img: "images/img14.jpg",
+    description: "Run through galaxies in these comfy space kicks.",
+    owner: "Stellar Shoes"
+  },
+  {
+    id: 15,
+    name: "Nebula Sneakers",
+    price: 150,
+    img: "images/img15.jpg",
+    description: "Run through galaxies in these comfy space kicks.",
+    owner: "Stellar Shoes"
+  },
+  {
+    id: 16,
+    name: "Nebula Sneakers",
+    price: 150,
+    img: "images/img16.jpg",
+    description: "Run through galaxies in these comfy space kicks.",
+    owner: "Stellar Shoes"
+  },
+  {
+    id: 17,
+    name: "Nebula Sneakers",
+    price: 150,
+    img: "images/img17.jpg",
+    description: "Run through galaxies in these comfy space kicks.",
+    owner: "Stellar Shoes"
+  },
+  {
+    id: 18,
+    name: "Nebula Sneakers",
+    price: 150,
+    img: "images/img18.jpg",
+    description: "Run through galaxies in these comfy space kicks.",
+    owner: "Stellar Shoes"
+  },
+  {
+    id: 19,
+    name: "Nebula Sneakers",
+    price: 150,
+    img: "images/img19.jpg",
+    description: "Run through galaxies in these comfy space kicks.",
+    owner: "Stellar Shoes"
+  },
+  {
+    id: 20,
+    name: "Nebula Sneakers",
+    price: 150,
+    img: "images/img20.jpg",
+    description: "Run through galaxies in these comfy space kicks.",
+    owner: "Stellar Shoes"
+  },
+];
+
+
+const productContainer = document.getElementById('products');
+const modal = document.getElementById('modal');
+const modalTitle = document.getElementById('modal-title');
+const modalOwner = document.getElementById('modal-owner');
+const modalPrice = document.getElementById('modal-price');
+const modalDesc = document.getElementById('modal-desc');
+const modalImg = document.getElementById('modal-img');
+const buyButton = document.getElementById('buy-button');
+let selectedProduct = null;
+
+function renderProducts() {
+  productContainer.innerHTML = products.map(product => `
+    <div class="product-card" onclick="showDetails(${product.id})">
+      <img src="${product.img}" alt="${product.name}" />
+      <h3>${product.name}</h3>
+      <p>$${product.price}</p>
+    </div>
+  `).join('');
+}
+
+function showDetails(id) {
+  const product = products.find(p => p.id === id);
+  selectedProduct = product;
+  modalTitle.textContent = product.name;
+  modalOwner.textContent = `Owner: ${product.owner}`;
+  modalPrice.textContent = `Price: $${product.price}`;
+  modalDesc.textContent = product.description;
+  modalImg.src = product.img;
+  modal.classList.remove('hidden');
+}
+
+document.getElementById('close-modal').onclick = () => modal.classList.add('hidden');
+buyButton.onclick = () => {
+  modal.classList.add('hidden');
+  document.getElementById('buy-form-modal').classList.remove('hidden');
+};
+
+document.getElementById('close-form').onclick = () => {
+  document.getElementById('buy-form-modal').classList.add('hidden');
+};
+
+document.getElementById('buy-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  alert(`Thank you for purchasing ${selectedProduct.name}!`);
+  document.getElementById('buy-form-modal').classList.add('hidden');
+});
+
+window.addEventListener('scroll', () => {
+  const bg = document.querySelector('.parallax-bg');
+  if (bg) bg.style.transform = `translateY(${window.scrollY * 0.5}px)`;
+});
+
+renderProducts();
+
+    
+</script>
